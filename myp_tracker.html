@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام المتابعة والتقويم والدعم والإغناء — الأستاذ سعيد محسين</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{color-scheme:light;--navy:#1A3A6B;--navy-deep:#0F2444;--navy-mid:#234A82;--gold:#C49A2A;--gold-light:#F0D97A;--gold-pale:#FBF4DC;--teal:#2A7C8A;--teal-light:#E3F4F6;--green:#2E7D52;--green-light:#E8F5EE;--red:#B83232;--red-light:#FDEAEA;--orange:#C96B1A;--orange-light:#FEF0E0;--gray-50:#F7F8FA;--gray-100:#EEF0F4;--gray-200:#D8DCE6;--gray-400:#8E97AB;--gray-600:#4A5568;--gray-800:#1E2733;--white:#FFFFFF;--sidebar-w:240px;--radius:10px;--shadow:0 2px 10px rgba(26,58,107,.08);--shadow-md:0 4px 20px rgba(26,58,107,.13)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--gray-50);color:var(--gray-800);min-height:100vh;display:flex}
+.sidebar{width:var(--sidebar-w);background:var(--navy-deep);min-height:100vh;display:flex;flex-direction:column;position:fixed;right:0;top:0;bottom:0;z-index:100}
+.sidebar-logo{padding:22px 18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sidebar-logo .brand{font-size:14px;font-weight:700;color:var(--gold-light);line-height:1.4}
+.sidebar-logo .sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:3px}
+.sidebar-nav{flex:1;padding:12px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 18px;cursor:pointer;color:rgba(255,255,255,.65);font-size:13px;transition:background .15s,color .15s;border-right:3px solid transparent}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.active{background:rgba(196,154,42,.15);color:var(--gold-light);border-right-color:var(--gold)}
+.nav-item .icon{font-size:16px;flex-shrink:0}
+.sidebar-footer{padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.3);text-align:center}
+.main{margin-right:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:var(--white);border-bottom:1px solid var(--gray-200);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:17px;font-weight:700;color:var(--navy)}
+.topbar-meta{font-size:12px;color:var(--gray-400);margin-top:2px}
+.topbar-actions{display:flex;gap:10px;align-items:center}
+.page{display:none;padding:26px 28px;flex:1}
+.page.active{display:block}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:inherit}
+.btn-primary{background:var(--navy);color:#fff}.btn-primary:hover{background:var(--navy-mid)}
+.btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--navy-mid)}.btn-outline:hover{background:var(--gray-100)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-ghost{background:transparent;color:var(--gray-600);border:1.5px solid var(--gray-200)}.btn-ghost:hover{background:var(--gray-100)}
+.btn-danger{background:var(--red);color:#fff}
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--white);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);border-right:4px solid var(--navy)}
+.stat-card.gold{border-right-color:var(--gold)}.stat-card.teal{border-right-color:var(--teal)}.stat-card.red{border-right-color:var(--red)}
+.stat-label{font-size:11px;color:var(--gray-400);margin-bottom:5px}
+.stat-value{font-size:26px;font-weight:800;color:var(--navy)}
+.stat-card.gold .stat-value{color:var(--gold)}.stat-card.teal .stat-value{color:var(--teal)}.stat-card.red .stat-value{color:var(--red)}
+.stat-sub{font-size:11px;color:var(--gray-400);margin-top:3px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-size:15px;font-weight:700;color:var(--navy)}
+.table-wrap{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:var(--navy)}
+thead th{color:#fff;padding:12px 14px;text-align:right;font-weight:600;font-size:12.5px}
+tbody tr{border-bottom:1px solid var(--gray-100);transition:background .1s}
+tbody tr:hover{background:var(--gray-50)}
+tbody td{padding:11px 14px;vertical-align:middle}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-green{background:var(--green-light);color:var(--green)}.badge-orange{background:var(--orange-light);color:var(--orange)}
+.badge-red{background:var(--red-light);color:var(--red)}.badge-blue{background:#E3EAF7;color:var(--navy)}.badge-gold{background:var(--gold-pale);color:#8A6B10}
+.stars{display:inline-flex;gap:2px}
+.star{font-size:16px;cursor:pointer;color:var(--gray-200);transition:color .1s,transform .1s}
+.star.lit{color:var(--gold)}.star:hover{transform:scale(1.2)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,20,40,.55);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.2);padding:28px 32px;width:620px;max-width:95vw;max-height:90vh;overflow-y:auto;direction:rtl}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.modal-title{font-size:17px;font-weight:800;color:var(--navy)}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--gray-400);line-height:1}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+label{font-size:12.5px;font-weight:600;color:var(--gray-600)}
+input,select,textarea{padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:7px;font-size:13px;font-family:inherit;color:var(--gray-800);background:var(--white);transition:border .15s;direction:rtl}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--navy)}
+textarea{resize:vertical;min-height:80px}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.prog-bar{height:7px;border-radius:4px;background:var(--gray-100);overflow:hidden}
+.prog-fill{height:100%;border-radius:4px}
+.prog-navy{background:var(--navy)}.prog-gold{background:var(--gold)}.prog-green{background:var(--green)}.prog-red{background:var(--red)}
+.diag-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.diag-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;border-top:4px solid var(--gray-200)}
+.diag-card.dyslexia{border-top-color:#8B4A9C}.diag-card.dyscalculia{border-top-color:var(--teal)}.diag-card.adhd{border-top-color:var(--orange)}.diag-card.reading{border-top-color:var(--green)}.diag-card.writing{border-top-color:var(--red)}.diag-card.gifted{border-top-color:var(--gold)}
+.diag-card-icon{font-size:28px;margin-bottom:10px}
+.diag-card-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.diag-card-desc{font-size:12px;color:var(--gray-600);line-height:1.6}
+.behavior-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:12px;color:var(--gray-600);border-bottom:1px solid var(--gray-100)}
+.behavior-item:last-child{border-bottom:none}
+.behavior-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--gray-200);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .1s;margin-top:1px}
+.behavior-check.checked{background:var(--navy);border-color:var(--navy);color:#fff;font-size:10px}
+.report-section{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 24px;margin-bottom:18px}
+.report-section h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--gray-100)}
+.strategy-tag{display:inline-flex;background:var(--teal-light);color:var(--teal);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin:3px}
+.weakness-tag{display:inline-flex;background:var(--red-light);color:var(--red);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin:3px}
+.tabs{display:flex;gap:4px;background:var(--gray-100);padding:4px;border-radius:9px;width:fit-content;margin-bottom:20px}
+.tab{padding:8px 18px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--gray-600);border:none;background:transparent;font-family:inherit}
+.tab.active{background:var(--white);color:var(--navy);box-shadow:var(--shadow)}
+.toast{position:fixed;bottom:24px;left:24px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:9px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.2);transform:translateY(80px);opacity:0;transition:all .3s;z-index:999}
+.toast.show{transform:translateY(0);opacity:1}
+.upload-area{border:2px dashed var(--gray-200);border-radius:var(--radius);padding:32px;text-align:center;cursor:pointer;background:var(--gray-50)}
+.upload-area:hover{border-color:var(--navy);background:#f0f4ff}
+.plan-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;margin-bottom:12px;border-right:4px solid var(--green)}
+.plan-card-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.plan-card-meta{font-size:12px;color:var(--gray-400);margin-bottom:10px}
+.empty-state{text-align:center;padding:60px 20px;color:var(--gray-400)}
+.empty-state .empty-icon{font-size:52px;margin-bottom:16px;opacity:.5}
+.empty-state p{font-size:14px;line-height:1.7}
+.obs-table{width:100%;border-collapse:collapse}
+.obs-table th{background:var(--navy);color:#fff;padding:10px 12px;font-size:12.5px;text-align:right;font-weight:600}
+.obs-table td{padding:0;vertical-align:top;border:1px solid var(--gray-200)}
+.obs-col{padding:10px 12px}
+.obs-col-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--gray-100)}
+.cb-item{display:flex;align-items:flex-start;gap:8px;padding:4px 0;cursor:pointer}
+.cb-item input[type=checkbox]{width:15px;height:15px;margin-top:2px;accent-color:var(--navy);flex-shrink:0;cursor:pointer;padding:0;border:none}
+.cb-item label{font-size:12px;color:var(--gray-600);cursor:pointer;line-height:1.5}
+.cb-item input:checked+label{color:var(--navy);font-weight:600}
+.trimester-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.trimester-card{border:1.5px solid var(--gray-200);border-radius:8px;padding:14px}
+.trimester-card-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px}
+.status-radio{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.status-radio label{display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;color:var(--gray-600);padding:5px 8px;border-radius:6px;border:1.5px solid var(--gray-200)}
+.status-radio input[type=radio]{accent-color:var(--navy);cursor:pointer;padding:0;border:none;width:14px;height:14px}
+.sign-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.sign-box{border:1.5px dashed var(--gray-200);border-radius:8px;padding:14px;text-align:center}
+.sign-box-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.sign-box-line{height:40px;border-bottom:1px solid var(--gray-200)}
+.sign-box-note{font-size:11px;color:var(--gray-400);margin-top:6px}
+.adapt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.indiv-section{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 24px;margin-bottom:16px}
+.indiv-section-title{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--gray-100)}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">نظام المتابعة والتقويم</div>
+    <div class="sub">الدعم والإغناء · الأستاذ سعيد محسين</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="icon">📊</span> لوحة المتابعة</div>
+    <div class="nav-item" onclick="showPage('students',this)"><span class="icon">👥</span> قائمة الطلاب</div>
+    <div class="nav-item" onclick="showPage('diagnostic',this)"><span class="icon">🔍</span> التشخيص والمتابعة الفردية</div>
+    <div class="nav-item" onclick="showPage('plans',this)"><span class="icon">📋</span> الخطط والاستراتيجيات</div>
+    <div class="nav-item" onclick="showPage('reports',this)"><span class="icon">📄</span> التقارير</div>
+    <div class="nav-item" onclick="showPage('stars',this)"><span class="icon">⭐</span> النجوم والتحفيز</div>
+  </nav>
+  <div class="sidebar-footer">MYP Beta 2026 · سعيد محسين</div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div>
+      <div class="topbar-title" id="pageTitle">لوحة المتابعة</div>
+      <div class="topbar-meta">العام الدراسي 2026-2027 · الفصل الأول</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-outline btn-sm" onclick="openImportModal()">📥 استيراد من Excel</button>
+      <button class="btn btn-primary btn-sm" onclick="openAddStudentModal()">+ إضافة طالب</button>
+    </div>
+  </header>
+
+  <!-- DASHBOARD -->
+  <div id="page-dashboard" class="page active">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">إجمالي الطلاب</div><div class="stat-value" id="statTotal">0</div><div class="stat-sub">مسجّلون</div></div>
+      <div class="stat-card gold"><div class="stat-label">النجوم ⭐</div><div class="stat-value" id="statStars">0</div><div class="stat-sub">مجموع الفصل</div></div>
+      <div class="stat-card gold"><div class="stat-label">النقاط 🔵</div><div class="stat-value" id="statPoints">0</div><div class="stat-sub">نقطتان/نجمة</div></div>
+      <div class="stat-card teal"><div class="stat-label">خطط علاجية</div><div class="stat-value" id="statPlans">0</div><div class="stat-sub">خطط نشطة</div></div>
+      <div class="stat-card red"><div class="stat-label">تحتاج متابعة</div><div class="stat-value" id="statNeedHelp">0</div><div class="stat-sub">دون المتوسط</div></div>
+    </div>
+    <div class="section-head">
+      <div class="section-title">آخر الطلاب المضافين</div>
+      <button class="btn btn-ghost btn-sm" onclick="showPage('students',null)">عرض الكل ←</button>
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th>الاسم</th><th>الصف</th><th>مستوى التقدم</th><th>النجوم</th><th>النقاط</th><th>التشخيص</th><th>الحالة</th></tr></thead>
+      <tbody id="dashboardTable"><tr><td colspan="7" style="text-align:center;padding:40px;color:#8E97AB">لا يوجد طلاب بعد.</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <!-- STUDENTS -->
+  <div id="page-students" class="page">
+    <div class="section-head">
+      <div class="section-title">قائمة الطلاب</div>
+      <div style="display:flex;gap:8px">
+        <input type="text" placeholder="🔍 بحث..." style="width:200px" oninput="filterStudents(this.value)">
+        <select onchange="filterByClass(this.value)" style="width:140px">
+          <option value="">كل الصفوف</option><option value="9">الصف 9</option><option value="10">الصف 10</option>
+        </select>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th>#</th><th>الاسم</th><th>الصف</th><th>المستوى</th><th>النجوم</th><th>النقاط</th><th>التشخيص</th><th>الخطة</th><th>إجراءات</th></tr></thead>
+      <tbody id="studentsTable"><tr><td colspan="9" style="text-align:center;padding:40px;color:#8E97AB">لا يوجد طلاب.</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <!-- DIAGNOSTIC -->
+  <div id="page-diagnostic" class="page">
+    <div class="section-head">
+      <div class="section-title">🔍 التشخيص والبطاقة الفردية</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:12px;color:var(--gray-400)">اختر الطالب:</span>
+        <select id="diagStudentSelect" style="width:220px" onchange="onDiagStudentChange()">
+          <option value="">-- اختر طالباً --</option>
+        </select>
+      </div>
+    </div>
+    <div id="diagEmptyState"><div class="empty-state"><div class="empty-icon">🔍</div><p>اختر طالباً لعرض بطاقة التشخيص والمتابعة.</p></div></div>
+    <div id="diagFullContent" style="display:none">
+      <div class="tabs">
+        <button class="tab active" onclick="switchDiagTab('behaviors',this)">🧠 السلوكات</button>
+        <button class="tab" onclick="switchDiagTab('observation',this)">📋 الملاحظة الميدانية</button>
+        <button class="tab" onclick="switchDiagTab('adaptations',this)">🛠️ التكيفات</button>
+        <button class="tab" onclick="switchDiagTab('trimester',this)">📅 المتابعة الفصلية</button>
+      </div>
+      <div id="dtab-behaviors">
+        <p style="font-size:13px;color:var(--gray-600);margin-bottom:16px;line-height:1.7">ضع علامة على السلوكات الملاحَظة ثم اضغط <strong>إنشاء التقرير</strong>.</p>
+        <div class="diag-grid" id="diagCards"></div>
+        <div style="margin-top:22px;display:flex;gap:12px;justify-content:flex-end">
+          <button class="btn btn-ghost" onclick="clearDiagnostic()">مسح الاختيارات</button>
+          <button class="btn btn-primary" onclick="generateReport()">📄 إنشاء التقرير</button>
+        </div>
+      </div>
+      <div id="dtab-observation" style="display:none">
+        <div style="overflow-x:auto"><table class="obs-table"><thead><tr><th style="width:17%">المحور</th><th style="width:41%">✅ نقاط القوة</th><th style="width:42%">⚠️ الصعوبات</th></tr></thead><tbody id="obsAxesBody"></tbody></table></div>
+      </div>
+      <div id="dtab-adaptations" style="display:none">
+        <p style="font-size:13px;color:var(--gray-600);margin-bottom:16px">حدّد التكيفات المطبَّقة مع هذا الطالب.</p>
+        <div class="adapt-grid" id="adaptBody"></div>
+      </div>
+      <div id="dtab-trimester" style="display:none">
+        <div class="trimester-grid" id="trimesterBody"></div>
+        <div class="indiv-section" style="margin-top:20px">
+          <div class="indiv-section-title">✍️ الالتزام والتوقيعات</div>
+          <div class="sign-row">
+            <div class="sign-box"><div class="sign-box-title">الطالب/ة</div><div class="sign-box-line"></div></div>
+            <div class="sign-box"><div class="sign-box-title">المعلم/ة</div><div class="sign-box-line"></div><div class="sign-box-note">الأستاذ سعيد محسين</div></div>
+            <div class="sign-box"><div class="sign-box-title">الأسرة / الوصي</div><div class="sign-box-line"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLANS -->
+  <div id="page-plans" class="page">
+    <div class="section-head">
+      <div class="section-title">📋 الخطط العلاجية والاستراتيجيات</div>
+      <button class="btn btn-primary btn-sm" onclick="openPlanModal()">+ خطة جديدة</button>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchPlansTab('plans-list',this)">📋 الخطط العلاجية</button>
+      <button class="tab" onclick="switchPlansTab('strategies-list',this)">💡 الاستراتيجيات</button>
+    </div>
+    <div id="plans-list"><div id="plansList"><div class="empty-state"><div class="empty-icon">📋</div><p>لا توجد خطط بعد.</p></div></div></div>
+    <div id="strategies-list" style="display:none"><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px" id="strategiesGrid"></div></div>
+  </div>
+
+  <!-- REPORTS -->
+  <div id="page-reports" class="page">
+    <div id="reportContent"><div class="empty-state"><div class="empty-icon">📄</div><p>اذهب إلى التشخيص، اختر طالباً وسلوكاته ثم اضغط "إنشاء التقرير".</p></div></div>
+  </div>
+
+  <!-- STARS -->
+  <div id="page-stars" class="page">
+    <div class="section-head">
+      <div class="section-title">نجوم التشجيع والتحفيز ⭐</div>
+      <div style="font-size:13px;color:var(--gray-400)">نجمة واحدة = نقطتان 🔵</div>
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th>الاسم</th><th>الصف</th><th>النجوم</th><th>النقاط 🔵</th><th>المنح التشجيعية</th><th>ملاحظة</th></tr></thead>
+      <tbody id="starsTable"><tr><td colspan="6" style="text-align:center;padding:40px;color:#8E97AB">أضف طلاباً أولاً.</td></tr></tbody></table>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL: ADD STUDENT -->
+<div class="modal-overlay" id="addStudentModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">إضافة طالب جديد</div><button class="modal-close" onclick="closeModal('addStudentModal')">✕</button></div>
+    <div class="form-grid">
+      <div class="form-group"><label>الاسم الأول *</label><input type="text" id="newFirstName" placeholder="مثال: محمد"></div>
+      <div class="form-group"><label>اسم العائلة</label><input type="text" id="newLastName" placeholder="مثال: العمري"></div>
+      <div class="form-group"><label>الصف</label><select id="newClass"><option value="9">الصف 9</option><option value="10">الصف 10</option></select></div>
+      <div class="form-group"><label>المستوى</label><select id="newLevel"><option>متقدم</option><option>متوسط</option><option>دون المتوسط</option><option>يحتاج دعماً</option></select></div>
+      <div class="form-group full"><label>ملاحظات</label><textarea id="newNotes" placeholder="ملاحظات أولية..."></textarea></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal('addStudentModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="addStudent()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: IMPORT -->
+<div class="modal-overlay" id="importModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">استيراد من Excel</div><button class="modal-close" onclick="closeModal('importModal')">✕</button></div>
+    <div class="upload-area" onclick="document.getElementById('xlsxInput').click()" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+      <div style="font-size:40px;margin-bottom:10px">📊</div>
+      <div style="font-size:14px;color:var(--gray-600)">انقر لاختيار ملف Excel أو اسحبه هنا</div>
+      <div style="font-size:12px;color:var(--gray-400);margin-top:6px">يدعم .xlsx و .xls — أعمدة: الاسم، الصف، المستوى</div>
+    </div>
+    <input type="file" id="xlsxInput" accept=".xlsx,.xls" style="display:none" onchange="importExcel(this)">
+    <div id="importPreview" style="margin-top:16px"></div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal('importModal')">إلغاء</button>
+      <button class="btn btn-primary" id="confirmImportBtn" style="display:none" onclick="confirmImport()">✅ استيراد</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PLAN -->
+<div class="modal-overlay" id="planModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">إنشاء خطة علاجية</div><button class="modal-close" onclick="closeModal('planModal')">✕</button></div>
+    <div class="form-grid">
+      <div class="form-group"><label>الطالب</label><select id="planStudentSel"></select></div>
+      <div class="form-group"><label>نوع التدخل</label><select id="planType"><option>دعم قرائي</option><option>دعم كتابي</option><option>تدخل سلوكي</option><option>دعم اجتماعي-عاطفي</option><option>إثراء للموهوبين</option></select></div>
+      <div class="form-group full"><label>أهداف الخطة</label><textarea id="planGoals" placeholder="أهداف قابلة للقياس..."></textarea></div>
+      <div class="form-group full"><label>الاستراتيجيات</label><textarea id="planStrategies" placeholder="الاستراتيجيات المقترحة..."></textarea></div>
+      <div class="form-group"><label>تاريخ البدء</label><input type="date" id="planStart"></div>
+      <div class="form-group"><label>تاريخ المراجعة</label><input type="date" id="planReview"></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal('planModal')">إلغاء</button>
+      <button class="btn btn-primary" onclick="savePlan()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var students=JSON.parse(localStorage.getItem('myp_students')||'[]');
+var plans=JSON.parse(localStorage.getItem('myp_plans')||'[]');
+var diagnostics=JSON.parse(localStorage.getItem('myp_diagnostics')||'{}');
+var indivData=JSON.parse(localStorage.getItem('myp_indiv')||'{}');
+var pendingImport=[];
+function save(){localStorage.setItem('myp_students',JSON.stringify(students));localStorage.setItem('myp_plans',JSON.stringify(plans));localStorage.setItem('myp_diagnostics',JSON.stringify(diagnostics));localStorage.setItem('myp_indiv',JSON.stringify(indivData));}
+
+var DIAG=[
+  {id:'dyslexia',title:'عسر القراءة (Dyslexia)',icon:'📖',css:'dyslexia',desc:'صعوبة في فك الشفرة الصوتية والقراءة',
+   b:['يقرأ ببطء شديد','يخلط بين الحروف المتشابهة','يعكس الحروف عند الكتابة','صعوبة في التهجئة','يفقد مكانه عند القراءة','تعب مفرط بعد القراءة القصيرة'],
+   i:['الطريقة الصوتية متعددة الحواس','المسطرة القرائية والخط الملوَّن','تسجيل الدروس صوتياً','وقت إضافي في التقييمات','التكنولوجيا المساعدة']},
+  {id:'dyscalculia',title:'عسر الحساب (Dyscalculia)',icon:'🔢',css:'dyscalculia',desc:'صعوبة في المفاهيم الرياضية',
+   b:['صعوبة في الحساب الذهني','لا يفهم القيمة المكانية','صعوبة في مقارنة الأعداد','لا يتذكر جداول الضرب','يخطئ في ترتيب الخطوات','ضعف في إدراك الوقت'],
+   i:['المحسوسات والنماذج المادية','الربط بالتطبيقات الحياتية','الخرائط الذهنية للعمليات','الآلة الحاسبة في التقييمات','تقسيم المسائل إلى خطوات']},
+  {id:'adhd',title:'اضطراب الانتباه (ADHD)',icon:'⚡',css:'adhd',desc:'صعوبة في التركيز والاندفاعية',
+   b:['يصعب عليه البقاء هادئاً','يبدأ المهام ولا يكملها','يتشتت بسهولة','ينسى التعليمات','يتصرف باندفاع','يتحدث بشكل مفرط'],
+   i:['تقسيم المهام إلى خطوات قصيرة','الجلوس في مقدمة الفصل','استراتيجية Pomodoro','فترات حركة قصيرة','التقويم المرئي والمؤقتات']},
+  {id:'reading',title:'ضعف الفهم القرائي',icon:'📝',css:'reading',desc:'يقرأ بطلاقة لكن يعاني في الاستيعاب',
+   b:['لا يلخص ما قرأه','لا يستنتج المعنى الضمني','لا يفهم المفردات في سياقها','يعيد القراءة دون فائدة','يجيب إجابات حرفية'],
+   i:['استراتيجية SQ3R','رسم خرائط القصة','الأسئلة التوقعية','التلخيص التدريجي','القراءة الثنائية']},
+  {id:'writing',title:'صعوبات الكتابة (Dysgraphia)',icon:'✍️',css:'writing',desc:'صعوبة في التعبير الكتابي',
+   b:['خط اليد غير مقروء','يكتب ببطء شديد','لا ينظم أفكاره كتابياً','أخطاء إملائية متكررة','جمل مبتورة غير مكتملة'],
+   i:['الكتابة على الحاسوب','نماذج الكتابة المبنيّة','تسجيل الإجابات صوتياً','تقليل كمية الكتابة','ورق مسطّر خاص']},
+  {id:'gifted',title:'الطالب الموهوب/المتفوق',icon:'🌟',css:'gifted',desc:'قدرات أعلى من المتوسط تحتاج إثراءً',
+   b:['ينهي المهام بسرعة','يطرح أسئلة متعمقة','يمل من التكرار','يُعلِّم زملاءه تلقائياً','يُفضِّل المشاريع المعقدة'],
+   i:['مشاريع تعمق مستقلة','التسريع في بعض الموضوعات','دور الخبير والمرشد','برامج الإثراء والمسابقات','قراءات أكاديمية متقدمة']}
+];
+
+var OBS_AXES=[
+  {id:'knowledge',title:'المعارف والدروس',icon:'📚',
+   s:['قدرة جيدة على الحفظ الشفهي','استدعاء المعلومات المباشرة','فهم المفاهيم الأساسية','ربط المعارف الجديدة بالسابقة'],
+   d:['صعوبة في استدعاء المصطلحات المجردة','التعثر في التراكيب المركبة','ضعف التطبيق على وضعيات جديدة','صعوبة التمييز بين المفاهيم المتقاربة']},
+  {id:'method',title:'المنهجية والممارسة الكتابية',icon:'✍️',
+   s:['الامتثال للتعليمات المباشرة','أداء أفضل في المهام القصيرة','استخدام الخطاطات المساعدة','تنظيم الإجابات بشكل مقبول'],
+   d:['انعدام التركيز وبطء المعالجة','عدم إكمال المهام المركبة','أخطاء إملائية متكررة','صعوبة البناء الفقري المنظم']},
+  {id:'homework',title:'العمل الشخصي والواجبات',icon:'📖',
+   s:['إنجاز الواجبات البسيطة بدعم أسري','إبداء الرغبة في التحسين','المثابرة على المهام القصيرة','الاستعداد للعمل في مجموعات'],
+   d:['ضعف الوظائف التنفيذية','نسيان المهام والواجبات','صعوبة الاستقلالية المنزلية','عدم إتمام المشاريع الممتدة']},
+  {id:'behavior',title:'السلوك والمشاركة',icon:'🙋',
+   s:['مشاركة شفهية فعالة','الانضباط بقواعد الفصل','التفاعل الإيجابي مع الأقران','حسن الاستماع وتقبل التغذية الراجعة'],
+   d:['تشتت الانتباه لفترات طويلة','انسحاب اجتماعي أو سلوكيات تعويضية','الاندفاعية في الردود','صعوبة انتظار الدور']}
+];
+
+var ADAPTATIONS=['إعادة صياغة التعليمات والتحقق من الفهم','تخفيف كمية الكتابة / دعائم مكيَّفة','الجلوس الاستراتيجي في مقدمة الفصل','وقت إضافي أو تقييم مكيَّف','الدعم متعدد الحواس (رسوم، خرائط ذهنية)','استراتيجيات ما وراء المعرفة','تقسيم المهام إلى خطوات صغيرة','استخدام الألوان والمنظمات البيانية','التقييم الشفوي بديلاً عن الكتابي','التعاون مع الأسرة لمتابعة الواجبات'];
+
+var STRATEGIES=[
+  {t:'التعليم المتمايز (Differentiation)',d:'تعديل المحتوى والعملية والمنتج وفق مستوى كل طالب. مجموعات مرنة ومهام متدرجة.',i:'🎯',c:'var(--navy)'},
+  {t:'التعلم التعاوني (Cooperative Learning)',d:'المجموعات الإيجابية المترابطة: كل عضو مسؤول عن تعلم الآخرين (STAD, Jigsaw).',i:'🤝',c:'var(--teal)'},
+  {t:'التغذية الراجعة الفورية',d:'تعليقات محددة وقابلة للتطبيق مرتبطة بمعايير MYP بدلاً من الدرجات العامة.',i:'💬',c:'var(--green)'},
+  {t:'التدريس بالنمذجة (Modeling)',d:'يُظهر المعلم عملية التفكير صوتاً عالياً (Think-aloud) قبل أن يُطلب من الطلاب التطبيق.',i:'🎬',c:'#8B4A9C'},
+  {t:'استراتيجية المداخل المتعددة (UDL)',d:'تقديم المعلومة بطرق متعددة: مرئي، سمعي، حركي، قرائي.',i:'🧩',c:'var(--orange)'},
+  {t:'التقييم من أجل التعلم (AFL)',d:'التقييم التشكيلي المستمر: بطاقات الخروج، اللوحات البيضاء، الأقران، التأمل الذاتي.',i:'📊',c:'var(--gold)'},
+  {t:'الحلقة السقراطية (Socratic Seminar)',d:'نقاش منظَّم يدفع الطلاب للتفكير النقدي والتحدث بأدلة نصية.',i:'🗣️',c:'var(--red)'},
+  {t:'خرائط التفكير (Thinking Maps)',d:'8 أنواع من الخرائط المعرفية: دائرية، فقاعية، شجرية، جسرية.',i:'🗺️',c:'var(--teal)'}
+];
+
+// Navigation
+function showPage(id,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+  if(el) el.classList.add('active');
+  var titles={dashboard:'لوحة المتابعة',students:'قائمة الطلاب',diagnostic:'التشخيص والمتابعة الفردية',plans:'الخطط والاستراتيجيات',reports:'التقارير',stars:'النجوم والتحفيز'};
+  document.getElementById('pageTitle').textContent=titles[id]||'';
+  if(id==='dashboard') renderDashboard();
+  if(id==='students') renderStudentsTable();
+  if(id==='diagnostic'){renderDiagCards();renderObsAxes();renderAdaptBody();renderTrimester();}
+  if(id==='plans'){renderPlans();renderStrategies();}
+  if(id==='stars') renderStars();
+}
+
+// Tabs
+function switchDiagTab(tabId,btn){
+  document.querySelectorAll('#page-diagnostic .tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  ['behaviors','observation','adaptations','trimester'].forEach(function(id){
+    var el=document.getElementById('dtab-'+id);
+    if(el) el.style.display=id===tabId?'block':'none';
+  });
+  if(tabId==='observation') renderObsAxes();
+  if(tabId==='adaptations') renderAdaptBody();
+  if(tabId==='trimester') renderTrimester();
+  if(tabId==='behaviors') renderDiagCards();
+}
+function switchPlansTab(tabId,btn){
+  document.querySelectorAll('#page-plans .tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('plans-list').style.display=tabId==='plans-list'?'block':'none';
+  document.getElementById('strategies-list').style.display=tabId==='strategies-list'?'block':'none';
+  if(tabId==='strategies-list') renderStrategies();
+}
+function onDiagStudentChange(){
+  var id=document.getElementById('diagStudentSelect').value;
+  if(!id){document.getElementById('diagEmptyState').style.display='block';document.getElementById('diagFullContent').style.display='none';return;}
+  document.getElementById('diagEmptyState').style.display='none';
+  document.getElementById('diagFullContent').style.display='block';
+  renderDiagCards();renderObsAxes();renderAdaptBody();renderTrimester();loadDiagnostic();
+}
+
+// Students
+function openAddStudentModal(){openModal('addStudentModal');}
+function addStudent(){
+  var first=document.getElementById('newFirstName').value.trim();
+  if(!first){showToast('يرجى إدخال الاسم الأول');return;}
+  var last=document.getElementById('newLastName').value.trim();
+  students.push({id:Date.now(),name:first+(last?' '+last:''),class:document.getElementById('newClass').value,level:document.getElementById('newLevel').value,notes:document.getElementById('newNotes').value,stars:0,diagnoses:[],createdAt:new Date().toISOString()});
+  save();closeModal('addStudentModal');
+  document.getElementById('newFirstName').value='';document.getElementById('newLastName').value='';document.getElementById('newNotes').value='';
+  renderDashboard();renderStudentsTable();updateSelects();showToast('✅ تمت إضافة الطالب');
+}
+function deleteStudent(id){
+  if(!confirm('هل تريد حذف هذا الطالب؟'))return;
+  students=students.filter(function(s){return s.id!==id;});save();
+  renderDashboard();renderStudentsTable();renderStars();updateSelects();showToast('🗑️ تم الحذف');
+}
+function updateSelects(){
+  var opts='<option value="">-- اختر طالباً --</option>'+students.map(function(s){return'<option value="'+s.id+'">'+s.name+' — الصف '+s.class+'</option>';}).join('');
+  document.getElementById('diagStudentSelect').innerHTML=opts;
+  var ps=document.getElementById('planStudentSel');
+  if(ps) ps.innerHTML=students.map(function(s){return'<option value="'+s.id+'">'+s.name+' — الصف '+s.class+'</option>';}).join('');
+}
+
+// Render
+function levelBadge(l){var m={'متقدم':'badge-green','متوسط':'badge-blue','دون المتوسط':'badge-orange','يحتاج دعماً':'badge-red'};return'<span class="badge '+(m[l]||'badge-blue')+'">'+l+'</span>';}
+function starsHTML(count,id){
+  var h='<span class="stars">';
+  for(var i=1;i<=5;i++) h+='<span class="star '+(i<=count?'lit':'')+'" onclick="setStar('+id+','+i+')" title="'+i+' نجوم">★</span>';
+  return h+'</span>';
+}
+function setStar(id,n){
+  var s=students.find(function(x){return x.id===id;});if(!s)return;
+  s.stars=n;save();renderStudentsTable();renderStars();renderDashboard();
+  showToast('⭐ مُنح '+n+' نجمة ('+(n*2)+' نقطة) لـ '+s.name);
+}
+function renderDashboard(){
+  var total=students.length;
+  var totalStars=students.reduce(function(a,b){return a+b.stars;},0);
+  var totalPoints=students.reduce(function(a,b){return a+(b.stars*2);},0);
+  var plansCount=Array.from(new Set(plans.map(function(p){return p.studentId;}))).length;
+  var needHelp=students.filter(function(s){return s.level==='يحتاج دعماً'||s.level==='دون المتوسط';}).length;
+  document.getElementById('statTotal').textContent=total;
+  document.getElementById('statStars').textContent=totalStars;
+  document.getElementById('statPoints').textContent=totalPoints;
+  document.getElementById('statPlans').textContent=plansCount;
+  document.getElementById('statNeedHelp').textContent=needHelp;
+  var tbody=document.getElementById('dashboardTable');
+  if(!students.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:#8E97AB">لا يوجد طلاب بعد.</td></tr>';return;}
+  var recent=[].concat(students).reverse().slice(0,8);
+  tbody.innerHTML=recent.map(function(s){
+    var pW={'متقدم':88,'متوسط':60,'دون المتوسط':38,'يحتاج دعماً':20}[s.level]||50;
+    var pC={'متقدم':'prog-green','متوسط':'prog-navy','دون المتوسط':'prog-gold','يحتاج دعماً':'prog-red'}[s.level]||'prog-navy';
+    var hasP=plans.some(function(p){return p.studentId===s.id;});
+    return'<tr><td><strong>'+s.name+'</strong></td><td>الصف '+s.class+'</td><td><div class="prog-bar" style="width:100px"><div class="prog-fill '+pC+'" style="width:'+pW+'%"></div></div></td><td>'+starsHTML(s.stars,s.id)+'</td><td><span class="badge badge-gold">🔵 '+(s.stars*2)+'</span></td><td>'+(s.diagnoses||[]).map(function(d){var cat=DIAG.find(function(c){return c.id===d;});return cat?'<span class="badge badge-blue">'+cat.title.split('(')[0].trim()+'</span>':'';}).join('')+'</td><td>'+(hasP?'<span class="badge badge-green">خطة نشطة</span>':'<span class="badge badge-gold">بدون خطة</span>')+'</td></tr>';
+  }).join('');
+}
+function renderStudentsTable(filter,classFilter){
+  filter=filter||'';classFilter=classFilter||'';
+  var tbody=document.getElementById('studentsTable');
+  var list=students.filter(function(s){return(!filter||s.name.includes(filter))&&(!classFilter||s.class===classFilter);});
+  if(!list.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;color:#8E97AB">لا يوجد طلاب.</td></tr>';return;}
+  tbody.innerHTML=list.map(function(s,i){
+    var hasP=plans.some(function(p){return p.studentId===s.id;});
+    return'<tr><td>'+(i+1)+'</td><td><strong>'+s.name+'</strong></td><td>الصف '+s.class+'</td><td>'+levelBadge(s.level)+'</td><td>'+starsHTML(s.stars,s.id)+'</td><td><span class="badge badge-gold">🔵 '+(s.stars*2)+'</span></td><td>'+(s.diagnoses||[]).map(function(d){var cat=DIAG.find(function(c){return c.id===d;});return cat?'<span class="badge badge-blue">'+cat.title.split('(')[0].trim()+'</span>':'';}).join('')+'</td><td>'+(hasP?'<span class="badge badge-green">✓</span>':'—')+'</td><td style="white-space:nowrap"><button class="btn btn-sm btn-outline" onclick="openStudentDiag('+s.id+')">🔍</button><button class="btn btn-sm btn-danger" style="margin-right:4px" onclick="deleteStudent('+s.id+')">🗑️</button></td></tr>';
+  }).join('');
+}
+function filterStudents(v){renderStudentsTable(v);}
+function filterByClass(v){renderStudentsTable('',v);}
+function openStudentDiag(id){
+  showPage('diagnostic',document.querySelectorAll('.nav-item')[2]);
+  document.getElementById('diagStudentSelect').value=id;onDiagStudentChange();
+}
+
+// Diagnostic cards
+function renderDiagCards(){
+  var c=document.getElementById('diagCards');if(!c)return;
+  c.innerHTML=DIAG.map(function(cat){
+    return'<div class="diag-card '+cat.css+'"><div class="diag-card-icon">'+cat.icon+'</div><div class="diag-card-title">'+cat.title+'</div><div class="diag-card-desc">'+cat.desc+'</div><div style="margin-top:10px">'+cat.b.map(function(b,i){return'<div class="behavior-item"><div class="behavior-check" id="bc-'+cat.id+'-'+i+'" onclick="toggleBehavior(\''+cat.id+'\','+i+')"></div><span>'+b+'</span></div>';}).join('')+'</div></div>';
+  }).join('');
+  loadDiagnostic();
+}
+function loadDiagnostic(){
+  var selId=document.getElementById('diagStudentSelect').value;if(!selId)return;
+  var saved=diagnostics[selId]||{};
+  DIAG.forEach(function(cat){
+    cat.b.forEach(function(b,i){
+      var el=document.getElementById('bc-'+cat.id+'-'+i);if(!el)return;
+      var checked=saved[cat.id]&&saved[cat.id][i];
+      el.classList.toggle('checked',!!checked);el.textContent=checked?'✓':'';
+    });
+  });
+}
+function toggleBehavior(catId,idx){
+  var selId=document.getElementById('diagStudentSelect').value;
+  if(!selId){showToast('⚠️ يرجى اختيار طالب أولاً');return;}
+  if(!diagnostics[selId])diagnostics[selId]={};
+  if(!diagnostics[selId][catId])diagnostics[selId][catId]={};
+  diagnostics[selId][catId][idx]=!diagnostics[selId][catId][idx];save();
+  var el=document.getElementById('bc-'+catId+'-'+idx);
+  el.classList.toggle('checked',diagnostics[selId][catId][idx]);el.textContent=diagnostics[selId][catId][idx]?'✓':'';
+}
+function clearDiagnostic(){
+  var selId=document.getElementById('diagStudentSelect').value;if(!selId)return;
+  diagnostics[selId]={};save();loadDiagnostic();showToast('تم مسح الاختيارات');
+}
+
+// Observation axes
+function renderObsAxes(){
+  var body=document.getElementById('obsAxesBody');if(!body)return;
+  var selId=document.getElementById('diagStudentSelect').value;if(!selId)return;
+  if(!indivData[selId])indivData[selId]={obs:{},adapt:{},trimester:{}};
+  var d=indivData[selId];
+  body.innerHTML=OBS_AXES.map(function(ax){
+    var si=ax.s.map(function(s,i){return'<div class="cb-item"><input type="checkbox" id="xs-'+ax.id+'-'+i+'" '+(d.obs[ax.id+'_s'+i]?'checked':'')+' onchange="toggleIndiv('+selId+',\''+ax.id+'_s'+i+'\',this.checked,\'obs\')"><label for="xs-'+ax.id+'-'+i+'">'+s+'</label></div>';}).join('');
+    var di=ax.d.map(function(s,i){return'<div class="cb-item"><input type="checkbox" id="xd-'+ax.id+'-'+i+'" '+(d.obs[ax.id+'_d'+i]?'checked':'')+' onchange="toggleIndiv('+selId+',\''+ax.id+'_d'+i+'\',this.checked,\'obs\')"><label for="xd-'+ax.id+'-'+i+'">'+s+'</label></div>';}).join('');
+    return'<tr><td><div class="obs-col"><div class="obs-col-title">'+ax.icon+' '+ax.title+'</div></div></td><td><div class="obs-col"><div class="obs-col-title" style="color:var(--green)">✅ نقاط القوة</div>'+si+'</div></td><td><div class="obs-col"><div class="obs-col-title" style="color:var(--red)">⚠️ الصعوبات</div>'+di+'</div></td></tr>';
+  }).join('');
+}
+function renderAdaptBody(){
+  var c=document.getElementById('adaptBody');if(!c)return;
+  var selId=document.getElementById('diagStudentSelect').value;if(!selId)return;
+  if(!indivData[selId])indivData[selId]={obs:{},adapt:{},trimester:{}};
+  var d=indivData[selId];
+  c.innerHTML=ADAPTATIONS.map(function(a,i){return'<div class="cb-item"><input type="checkbox" id="xa-'+i+'" '+(d.adapt[i]?'checked':'')+' onchange="toggleIndiv('+selId+','+i+',this.checked,\'adapt\')"><label for="xa-'+i+'">'+a+'</label></div>';}).join('');
+}
+function renderTrimester(){
+  var body=document.getElementById('trimesterBody');if(!body)return;
+  var selId=document.getElementById('diagStudentSelect').value;if(!selId)return;
+  if(!indivData[selId])indivData[selId]={obs:{},adapt:{},trimester:{}};
+  var d=indivData[selId];
+  body.innerHTML=[1,2,3].map(function(t){
+    var td=d.trimester[t]||{};
+    return'<div class="trimester-card"><div class="trimester-card-title">📅 الفصل '+t+'</div><div style="font-size:12px;color:var(--gray-400);margin-bottom:6px">التطور والتقدم:</div><textarea style="width:100%;height:50px;font-size:11px;resize:none" placeholder="ملاحظات..." onblur="saveTriNote('+selId+','+t+',\'progress\',this.value)">'+(td.progress||'')+'</textarea><div style="font-size:12px;color:var(--gray-400);margin:6px 0 4px">نقاط التحسين:</div><textarea style="width:100%;height:40px;font-size:11px;resize:none" placeholder="ما يحتاج تحسيناً..." onblur="saveTriNote('+selId+','+t+',\'improve\',this.value)">'+(td.improve||'')+'</textarea><div class="status-radio">'+['في تقدم ✅','ركود ⏸️','يحتاج مراجعة 🔄'].map(function(s,i){return'<label><input type="radio" name="tri-'+selId+'-'+t+'" value="'+i+'" '+(td.status==i?'checked':'')+' onchange="saveTriStatus('+selId+','+t+','+i+')"> '+s+'</label>';}).join('')+'</div></div>';
+  }).join('');
+}
+function toggleIndiv(sid,key,val,section){
+  if(!indivData[sid])indivData[sid]={obs:{},adapt:{},trimester:{}};
+  indivData[sid][section][key]=val;localStorage.setItem('myp_indiv',JSON.stringify(indivData));
+}
+function saveTriNote(sid,t,field,val){
+  if(!indivData[sid])indivData[sid]={obs:{},adapt:{},trimester:{}};
+  if(!indivData[sid].trimester[t])indivData[sid].trimester[t]={};
+  indivData[sid].trimester[t][field]=val;localStorage.setItem('myp_indiv',JSON.stringify(indivData));
+}
+function saveTriStatus(sid,t,val){
+  if(!indivData[sid])indivData[sid]={obs:{},adapt:{},trimester:{}};
+  if(!indivData[sid].trimester[t])indivData[sid].trimester[t]={};
+  indivData[sid].trimester[t].status=val;localStorage.setItem('myp_indiv',JSON.stringify(indivData));
+  showToast('✅ تم حفظ حالة الفصل '+t);
+}
+
+// Report
+function generateReport(){
+  var selId=document.getElementById('diagStudentSelect').value;
+  if(!selId){showToast('⚠️ يرجى اختيار طالب أولاً');return;}
+  var student=students.find(function(s){return s.id==selId;});if(!student)return;
+  var saved=diagnostics[selId]||{};
+  var detected=DIAG.map(function(cat){
+    var checks=saved[cat.id]||{};var count=Object.values(checks).filter(Boolean).length;
+    return count>0?{cat:cat,count:count,total:cat.b.length}:null;
+  }).filter(Boolean);
+  student.diagnoses=detected.map(function(d){return d.cat.id;});save();
+  if(!detected.length){showToast('لم يتم تحديد أي سلوكات.');return;}
+  var date=new Date().toLocaleDateString('ar-SA');
+  var html='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><div style="font-size:18px;font-weight:800;color:var(--navy)">📄 التقرير التشخيصي الشامل</div><button class="btn btn-outline btn-sm" onclick="window.print()">🖨️ طباعة</button></div>';
+  html+='<div class="report-section" style="background:linear-gradient(135deg,var(--navy-deep),var(--navy-mid));color:#fff"><div style="font-size:20px;font-weight:800;margin-bottom:8px">👤 '+student.name+'</div><div style="opacity:.8;font-size:13px">الصف '+student.class+' | المستوى: '+student.level+' | '+date+'</div><div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">'+detected.map(function(d){return'<span style="background:rgba(255,255,255,.15);padding:4px 14px;border-radius:20px;font-size:12px">'+d.cat.icon+' '+d.cat.title.split('(')[0].trim()+'</span>';}).join('')+'</div></div>';
+  detected.forEach(function(x){
+    var pct=Math.round(x.count/x.total*100);
+    var sev=pct>=70?{l:'شديد',c:'var(--red)'}:pct>=40?{l:'متوسط',c:'var(--orange)'}:{l:'خفيف',c:'var(--gold)'};
+    var checked=diagnostics[selId][x.cat.id]||{};
+    var checkedB=x.cat.b.filter(function(b,i){return checked[i];});
+    html+='<div class="report-section"><h3>'+x.cat.icon+' '+x.cat.title+'</h3><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><div style="flex:1"><div style="font-size:12px;color:var(--gray-400);margin-bottom:5px">'+x.count+'/'+x.total+' سلوك — <strong style="color:'+sev.c+'">'+sev.l+'</strong></div><div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%;background:'+sev.c+'"></div></div></div><span style="font-size:22px;font-weight:800;color:'+sev.c+'">'+pct+'%</span></div><div style="margin-bottom:14px"><div style="font-size:13px;font-weight:700;margin-bottom:8px">السلوكات الملاحَظة:</div>'+checkedB.map(function(b){return'<div style="display:flex;gap:8px;padding:5px 0;font-size:13px;color:var(--gray-600);border-bottom:1px solid var(--gray-100)"><span style="color:'+sev.c+'">◆</span>'+b+'</div>';}).join('')+'</div><div><div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px">🎯 استراتيجيات التدخل:</div><div>'+x.cat.i.map(function(s){return'<span class="strategy-tag">'+s+'</span>';}).join('')+'</div></div></div>';
+  });
+  var allW=detected.reduce(function(acc,d){var ch=diagnostics[selId][d.cat.id]||{};return acc.concat(d.cat.b.filter(function(b,i){return ch[i];}));},[] );
+  html+='<div class="report-section"><h3>📋 ملخص توصيات الخطة العلاجية</h3><div style="margin-bottom:14px"><div style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--red)">مواطن الضعف:</div><div>'+allW.map(function(w){return'<span class="weakness-tag">'+w+'</span>';}).join('')+'</div></div><div style="background:var(--gray-50);border-radius:8px;padding:16px;font-size:13px;line-height:1.8;color:var(--gray-600)"><strong style="color:var(--navy)">توصية:</strong> يُنصح بوضع خطة تدخل متكاملة وإشراك المختص في صعوبات التعلم للتقييم الرسمي.</div><div style="margin-top:14px;display:flex;gap:10px"><button class="btn btn-primary" onclick="autoCreatePlan('+selId+')">إنشاء خطة تلقائياً</button><button class="btn btn-ghost" onclick="showPage(\'plans\',null)">عرض الخطط</button></div></div>';
+  document.getElementById('reportContent').innerHTML=html;
+  showPage('reports',null);showToast('✅ تم إنشاء التقرير');
+}
+function autoCreatePlan(studentId){
+  var student=students.find(function(s){return s.id==studentId;});if(!student)return;
+  var saved=diagnostics[studentId]||{};
+  var detected=DIAG.filter(function(cat){var ch=saved[cat.id]||{};return Object.values(ch).some(Boolean);});
+  plans.push({id:Date.now(),studentId:studentId,studentName:student.name,type:detected[0]?detected[0].title.split('(')[0].trim():'دعم عام',
+    goals:detected.map(function(d){return'تحسين مجال '+d.title.split('(')[0].trim();}).join(' — '),
+    strategies:detected.reduce(function(acc,d){return acc.concat(d.i.slice(0,2));},[]).join(' | '),
+    start:new Date().toISOString().split('T')[0],
+    review:new Date(Date.now()+30*24*3600000).toISOString().split('T')[0],
+    createdAt:new Date().toISOString()});
+  save();showPage('plans',null);showToast('✅ تم إنشاء الخطة تلقائياً');
+}
+
+// Plans
+function openPlanModal(){
+  updateSelects();
+  document.getElementById('planStart').value=new Date().toISOString().split('T')[0];
+  document.getElementById('planReview').value=new Date(Date.now()+30*24*3600000).toISOString().split('T')[0];
+  openModal('planModal');
+}
+function savePlan(){
+  var sid=document.getElementById('planStudentSel').value;
+  var student=students.find(function(s){return s.id==sid;});
+  plans.push({id:Date.now(),studentId:sid,studentName:student?student.name:'—',type:document.getElementById('planType').value,goals:document.getElementById('planGoals').value,strategies:document.getElementById('planStrategies').value,start:document.getElementById('planStart').value,review:document.getElementById('planReview').value,createdAt:new Date().toISOString()});
+  save();closeModal('planModal');renderPlans();showToast('✅ تم حفظ الخطة');
+}
+function renderPlans(){
+  var c=document.getElementById('plansList');
+  if(!plans.length){c.innerHTML='<div class="empty-state"><div class="empty-icon">📋</div><p>لا توجد خطط بعد.</p></div>';return;}
+  c.innerHTML=plans.map(function(p){return'<div class="plan-card"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="plan-card-title">📋 '+p.type+' — '+p.studentName+'</div><div class="plan-card-meta">بدأت: '+p.start+' | مراجعة: '+p.review+'</div></div><button class="btn btn-sm btn-danger" onclick="deletePlan('+p.id+')">🗑️</button></div>'+(p.goals?'<div style="font-size:13px;color:var(--gray-600);margin-bottom:8px"><strong>الأهداف:</strong> '+p.goals+'</div>':'')+(p.strategies?'<div style="font-size:12px;color:var(--teal)"><strong>الاستراتيجيات:</strong> '+p.strategies+'</div>':'')+'</div>';}).join('');
+}
+function deletePlan(id){plans=plans.filter(function(p){return p.id!==id;});save();renderPlans();showToast('🗑️ تم الحذف');}
+
+// Strategies
+function renderStrategies(){
+  document.getElementById('strategiesGrid').innerHTML=STRATEGIES.map(function(s){return'<div class="report-section" style="margin:0"><div style="font-size:28px;margin-bottom:10px">'+s.i+'</div><div style="font-size:15px;font-weight:700;color:'+s.c+';margin-bottom:8px">'+s.t+'</div><div style="font-size:13px;color:var(--gray-600);line-height:1.7">'+s.d+'</div></div>';}).join('');
+}
+
+// Stars
+function renderStars(){
+  var tbody=document.getElementById('starsTable');
+  if(!students.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:#8E97AB">أضف طلاباً أولاً.</td></tr>';return;}
+  var sorted=[].concat(students).sort(function(a,b){return b.stars-a.stars;});
+  tbody.innerHTML=sorted.map(function(s,i){
+    var medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    var badge=s.stars>=5?'🏆 متفوق':s.stars>=4?'⭐ ممتاز':s.stars>=3?'👍 جيد جداً':s.stars>=2?'👏 جيد':'—';
+    return'<tr><td><strong>'+medal+' '+s.name+'</strong></td><td>الصف '+s.class+'</td><td>'+starsHTML(s.stars,s.id)+'</td><td><span class="badge badge-gold" style="font-size:13px">🔵 '+(s.stars*2)+' نقطة</span></td><td><span class="badge badge-gold">'+badge+'</span></td><td><input type="text" placeholder="سبب التشجيع..." value="'+(s.starNote||'')+'" style="width:180px;font-size:12px" onblur="saveStarNote('+s.id+',this.value)"></td></tr>';
+  }).join('');
+}
+function saveStarNote(id,note){var s=students.find(function(x){return x.id===id;});if(s){s.starNote=note;save();}}
+
+// Excel Import
+function openImportModal(){openModal('importModal');}
+function handleDrop(e){e.preventDefault();var f=e.dataTransfer.files[0];if(f)processExcelFile(f);}
+function importExcel(input){if(input.files[0])processExcelFile(input.files[0]);}
+function processExcelFile(file){
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var wb=XLSX.read(e.target.result,{type:'binary'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      var data=XLSX.utils.sheet_to_json(ws,{header:1});
+      if(!data.length){showToast('الملف فارغ');return;}
+      pendingImport=data.slice(1).filter(function(r){return r.some(function(c){return c;});}).map(function(r){return{id:Date.now()+Math.random(),name:r[0]||'—',class:String(r[1]||'9').replace(/\D/g,'')||'9',level:r[2]||'متوسط',stars:0,diagnoses:[],notes:r[3]||'',createdAt:new Date().toISOString()};});
+      document.getElementById('importPreview').innerHTML='<div style="font-size:13px;color:var(--navy);font-weight:700;margin-bottom:8px">معاينة: '+pendingImport.length+' طالب</div><div style="max-height:200px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:8px"><table style="width:100%;font-size:12px;border-collapse:collapse"><thead style="background:var(--navy);color:#fff"><tr><th style="padding:8px;text-align:right">الاسم</th><th style="padding:8px;text-align:right">الصف</th><th style="padding:8px;text-align:right">المستوى</th></tr></thead><tbody>'+pendingImport.slice(0,20).map(function(s){return'<tr style="border-bottom:1px solid #eee"><td style="padding:7px">'+s.name+'</td><td style="padding:7px">'+s.class+'</td><td style="padding:7px">'+s.level+'</td></tr>';}).join('')+'</tbody></table></div>';
+      document.getElementById('confirmImportBtn').style.display='inline-flex';
+    }catch(err){showToast('خطأ: '+err.message);}
+  };
+  reader.readAsBinaryString(file);
+}
+function confirmImport(){
+  students=students.concat(pendingImport);save();
+  closeModal('importModal');renderDashboard();renderStudentsTable();updateSelects();
+  showToast('✅ تم استيراد '+pendingImport.length+' طالب');pendingImport=[];
+}
+
+// Modals
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('open');});});
+
+// Toast
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2800);}
+
+// Init
+renderDashboard();updateSelects();renderStrategies();
+</script>
+</body>
+</html>
